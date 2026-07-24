@@ -62,8 +62,10 @@ See [DATABASE.md](./DATABASE.md).
 ## Step 3 — Frontend on Vercel
 
 1. [vercel.com](https://vercel.com) → **Add New Project** → import the same GitHub repo
-2. **Root Directory:** `client`
-3. Framework: **Vite** (auto-detected)
+2. **Important — either:**
+   - **Root Directory:** leave as repo root (uses root `vercel.json` which builds `client/`), **or**
+   - **Root Directory:** set to `client` (then Vercel uses `client/vercel.json`)
+3. Framework: **Vite**
 4. Environment variable:
 
 | Variable | Value |
@@ -71,6 +73,17 @@ See [DATABASE.md](./DATABASE.md).
 | `VITE_API_URL` | `https://YOUR-API.onrender.com/api` |
 
 5. Deploy → copy Vercel URL, e.g. `https://ai-code-review.vercel.app`
+
+### Fix: `404 NOT_FOUND` on Vercel
+
+Usually the Root Directory was wrong (building repo root instead of the Vite app).
+
+1. Vercel → Project → **Settings** → **General** → **Root Directory**
+2. Set to `client` **and** clear/override build settings, **or** leave blank and rely on root `vercel.json`
+3. **Settings** → **Environment Variables** → confirm `VITE_API_URL`
+4. **Deployments** → **Redeploy** (uncheck “Use existing Build Cache”)
+
+Build output must be `dist` (Vite default).
 
 ---
 
@@ -100,6 +113,7 @@ curl https://YOUR-API.onrender.com/api/health
 
 | Issue | Fix |
 |-------|-----|
+| Frontend 404 `NOT_FOUND` | Set Vercel Root Directory to `client`, or use root `vercel.json`; Redeploy without cache |
 | CORS error | `CLIENT_URL` must match Vercel origin exactly (https, no trailing `/`) |
 | Mongo timeout | Atlas Network Access → `0.0.0.0/0` |
 | AI 503 | `GROQ_API_KEY` / `OPENAI_API_KEY` missing on Render |
