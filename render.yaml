@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: ai-code-review-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    rootDir: backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: AI_PROVIDER
+        value: groq
+      - key: CLIENT_URL
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_WEBHOOK_SECRET
+        sync: false
+      - key: GITHUB_APP_ID
+        sync: false
+      - key: GITHUB_PRIVATE_KEY
+        sync: false
+      - key: GITHUB_INSTALLATION_ID
+        sync: false
+      - key: SYSTEM_USER_ID
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: JUDGE0_API_KEY
+        sync: false
+      - key: FREE_DAILY_LIMIT
+        value: "20"

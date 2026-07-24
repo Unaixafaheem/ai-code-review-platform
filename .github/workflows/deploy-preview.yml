@@ -1,0 +1,38 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  vercel-preview-note:
+    name: Preview deploy reminder
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Comment PR with preview guidance
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## Deploy preview
+            Connect this repo to **Vercel** (root: \`client\`) and **Render** (root: \`backend\`) for automatic PR previews.
+
+            CI already runs lint, Jest/Supertest, Vitest, build, and Playwright smoke on this PR.
+
+            Optional env for previews:
+            - \`VITE_API_URL\` → your Render preview API
+            - \`CLIENT_URL\` → Vercel preview URL`;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const exists = comments.find(c => c.body && c.body.includes('Deploy preview'));
+            if (!exists) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+              });
+            }
