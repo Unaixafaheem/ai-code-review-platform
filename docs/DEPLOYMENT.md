@@ -66,11 +66,13 @@ See [DATABASE.md](./DATABASE.md).
    - **Root Directory:** leave as repo root (uses root `vercel.json` which builds `client/`), **or**
    - **Root Directory:** set to `client` (then Vercel uses `client/vercel.json`)
 3. Framework: **Vite**
-4. Environment variable:
+4. Environment variable (**required** — without this, Register/Login return **405**):
 
 | Variable | Value |
 |----------|-------|
 | `VITE_API_URL` | `https://YOUR-API.onrender.com/api` |
+
+> Must be a full `https://…` URL ending in `/api`. Then **Redeploy** (Vite bakes this in at build time).
 
 5. Deploy → copy Vercel URL, e.g. `https://ai-code-review.vercel.app`
 
@@ -114,6 +116,7 @@ curl https://YOUR-API.onrender.com/api/health
 | Issue | Fix |
 |-------|-----|
 | Frontend 404 `NOT_FOUND` | Set Vercel Root Directory to `client`, or use root `vercel.json`; Redeploy without cache |
+| Register/Login **405** | `VITE_API_URL` missing on Vercel → requests hit the static host. Set `https://YOUR-API.onrender.com/api` and redeploy |
 | CORS error | `CLIENT_URL` must match Vercel origin exactly (https, no trailing `/`) |
 | Mongo timeout | Atlas Network Access → `0.0.0.0/0` |
 | AI 503 | `GROQ_API_KEY` / `OPENAI_API_KEY` missing on Render |
